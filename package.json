@@ -4,8 +4,9 @@
   "description": "NestJS + MikroORM realworld API example (MySQL)",
   "main": "index.js",
   "scripts": {
-    "start": "yarn install && npm run build && node dist/main",          
-    "build": "nest build",             
+    "start": "node dist/main",          
+    "build": "nest build",
+    "heroku-postbuild": "npm run build",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
