@@ -4,7 +4,9 @@
   "description": "NestJS + MikroORM realworld API example (MySQL)",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/main",
+    "start": "node dist/main",          
+    "build": "nest build",             
+    "heroku-postbuild": "npm run build",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
@@ -13,8 +15,6 @@
     "test:watch": "jest --watch --config=jest.json",
     "test:coverage": "jest --config=jest.json --coverage --coverageDirectory=coverage",
     "test:e2e": "APIURL=http://localhost:3000/api ./e2e/run-api-tests.sh",
-	"build": "nest build",
-    "heroku-postbuild": "yarn install"
   },
   "repository": {
     "type": "git",
