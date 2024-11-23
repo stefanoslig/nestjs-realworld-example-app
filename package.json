@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/main",          
     "build": "nest build",             
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "yarn install && npm run build",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
