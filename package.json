@@ -108,7 +108,6 @@
   },
   "packageManager": "yarn@4.5.2",
   "engines": {
-    "node": "21.7.3",   
-    "npm": "10.5.0"      
+    "node": "21.7.3"
   }
 }
