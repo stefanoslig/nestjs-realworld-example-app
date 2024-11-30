@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
-import { InjectRepository } from '@mikro-orm/nestjs'
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { Tag } from './tag.entity';
 import { ITagsRO } from './tag.interface';
 
@@ -13,6 +13,6 @@ export class TagService {
 
   async findAll(): Promise<ITagsRO> {
     const tags = await this.tagRepository.findAll();
-    return { tags };
+    return { tags: tags.map((tag) => tag.tag) };
   }
 }
