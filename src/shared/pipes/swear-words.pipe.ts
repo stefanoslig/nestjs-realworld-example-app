@@ -15,12 +15,29 @@ export class SwearWordsPipe implements PipeTransform {
   }
 
   transform(value: any, metadata: ArgumentMetadata) {
+    return this.clean(value);
+  }
+
+  private clean(value: any): any {
     if (typeof value === 'string') {
       if (this.filter.isProfane(value)) {
         throw new BadRequestException('Inappropriate language is not allowed.');
       }
       return this.filter.clean(value);
     }
-    return value;
+
+    if (Array.isArray(value)) {
+      return value.map((item) => this.clean(item));
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      const cleanedObj = { ...value };
+      for (const key in cleanedObj) {
+        cleanedObj[key] = this.clean(cleanedObj[key]);
+      }
+      return cleanedObj;
+    }
+
+    return value; // Return other types (e.g., numbers, booleans) as-is
   }
 }
