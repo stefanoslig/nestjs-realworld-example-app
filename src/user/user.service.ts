@@ -23,7 +23,9 @@ export class UserService {
   async findOne(loginUserDto: LoginUserDto): Promise<User | null> {
     const findOneOptions = {
       email: loginUserDto.email,
-      password: crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
+      password: crypto
+        .createHmac('sha256', loginUserDto.password)
+        .digest('hex'),
     };
 
     return this.userRepository.findOne(findOneOptions);
@@ -32,13 +34,18 @@ export class UserService {
   async create(dto: CreateUserDto): Promise<IUserRO> {
     // check uniqueness of username/email
     const { username, email, password } = dto;
-    const exists = await this.userRepository.count({ $or: [{ username }, { email }] });
+    const exists = await this.userRepository.count({
+      $or: [{ username }, { email }],
+    });
 
     if (exists > 0) {
-      throw new HttpException({
-        message: 'Input data validation failed',
-        errors: { username: 'Username and email must be unique.' },
-      }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          message: 'Input data validation failed',
+          errors: { username: 'Username and email must be unique.' },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // create new user
@@ -46,10 +53,13 @@ export class UserService {
     const errors = await validate(user);
 
     if (errors.length > 0) {
-      throw new HttpException({
-        message: 'Input data validation failed',
-        errors: { username: 'Userinput is not valid.' },
-      }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          message: 'Input data validation failed',
+          errors: { username: 'Userinput is not valid.' },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     } else {
       await this.em.persistAndFlush(user);
       return this.buildUserRO(user);
@@ -89,12 +99,15 @@ export class UserService {
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);
 
-    return jwt.sign({
-      email: user.email,
-      exp: exp.getTime() / 1000,
-      id: user.id,
-      username: user.username,
-    }, SECRET);
+    return jwt.sign(
+      {
+        email: user.email,
+        exp: exp.getTime() / 1000,
+        id: user.id,
+        username: user.username,
+      },
+      SECRET,
+    );
   }
 
   private buildUserRO(user: User) {
@@ -102,7 +115,6 @@ export class UserService {
       bio: user.bio,
       email: user.email,
       image: user.image,
-      token: this.generateJWT(user),
       username: user.username,
     } as any;
 

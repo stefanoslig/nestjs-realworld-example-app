@@ -1,20 +1,28 @@
-import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  Param,
+  Post,
+  Put,
+  Res,
+  UsePipes,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { User } from './user.decorator';
 import { IUserRO } from './user.interface';
 import { UserService } from './user.service';
 
-import {
-  ApiBearerAuth,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('user')
 @Controller()
 export class UserController {
-
   constructor(private readonly userService: UserService) {}
 
   @Get('user')
@@ -23,7 +31,10 @@ export class UserController {
   }
 
   @Put('user')
-  async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
+  async update(
+    @User('id') userId: number,
+    @Body('user') userData: UpdateUserDto,
+  ) {
     return this.userService.update(userId, userData);
   }
 
@@ -40,7 +51,10 @@ export class UserController {
 
   @UsePipes(new ValidationPipe())
   @Post('users/login')
-  async login(@Body('user') loginUserDto: LoginUserDto): Promise<IUserRO> {
+  async login(
+    @Body('user') loginUserDto: LoginUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<IUserRO> {
     const foundUser = await this.userService.findOne(loginUserDto);
 
     const errors = { message: 'User not found' };
@@ -48,8 +62,15 @@ export class UserController {
       throw new HttpException({ errors }, 401);
     }
     const token = await this.userService.generateJWT(foundUser);
+
+    response.cookie('jwt', token, {
+      httpOnly: true, // prevents client-side JavaScript from reading the cookie
+      secure: true, // ensure cookie is sent only over HTTPS (set to false in dev if needed)
+      sameSite: 'strict', // helps mitigate CSRF attacks
+    });
+
     const { email, username, bio, image } = foundUser;
-    const user = { email, token, username, bio, image };
+    const user = { email, username, bio, image };
     return { user };
   }
 }
