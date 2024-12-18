@@ -3,7 +3,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const appOptions = { cors: true };
+  const appOptions = {
+    cors: {
+      origin: [
+        'http://localhost:4200',
+        'https://angular-ngrx-nx-realworld-example-app-lyart.vercel.app',
+      ],
+      credentials: true,
+    },
+  };
   const app = await NestFactory.create(AppModule, appOptions);
   app.setGlobalPrefix('api');
 
