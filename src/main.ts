@@ -10,7 +10,6 @@ async function bootstrap() {
         'https://angular-ngrx-nx-realworld-example-app-lyart.vercel.app',
       ],
       credentials: true,
-      sameSite: 'None',
     },
   };
   const app = await NestFactory.create(AppModule, appOptions);

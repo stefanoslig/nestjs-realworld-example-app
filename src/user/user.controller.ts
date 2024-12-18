@@ -66,7 +66,7 @@ export class UserController {
     response.cookie('jwt', token, {
       httpOnly: true, // prevents client-side JavaScript from reading the cookie
       secure: true, // ensure cookie is sent only over HTTPS (set to false in dev if needed)
-      sameSite: 'strict', // helps mitigate CSRF attacks
+      sameSite: 'none', // helps mitigate CSRF attacks
     });
 
     const { email, username, bio, image } = foundUser;
