@@ -73,4 +73,13 @@ export class UserController {
     const user = { email, username, bio, image };
     return { user };
   }
+
+  @Post('users/logout')
+  async logout(
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<{ message: string }> {
+    response.clearCookie('jwt');
+
+    return { message: 'Logged out successfully.' };
+  }
 }
