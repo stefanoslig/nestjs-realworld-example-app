@@ -78,7 +78,11 @@ export class UserController {
   async logout(
     @Res({ passthrough: true }) response: Response,
   ): Promise<{ message: string }> {
-    response.clearCookie('jwt');
+    response.clearCookie('jwt', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
 
     return { message: 'Logged out successfully.' };
   }
