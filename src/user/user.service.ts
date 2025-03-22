@@ -31,7 +31,7 @@ export class UserService {
     return this.userRepository.findOne(findOneOptions);
   }
 
-  async create(dto: CreateUserDto): Promise<IUserRO> {
+  async create(dto: CreateUserDto): Promise<User> {
     // check uniqueness of username/email
     const { username, email, password } = dto;
     const exists = await this.userRepository.count({
@@ -62,7 +62,7 @@ export class UserService {
       );
     } else {
       await this.em.persistAndFlush(user);
-      return this.buildUserRO(user);
+      return user;
     }
   }
 

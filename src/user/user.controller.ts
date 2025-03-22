@@ -38,10 +38,22 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('users')
-  async create(@Body('user') userData: CreateUserDto) {
-    return this.userService.create(userData);
+  async create(
+    @Body('user') userData: CreateUserDto,
+    @Res({ passthrough: true }) response: Response
+  ) {
+    const newUser = await this.userService.create(userData);
+    
+    const token = await this.userService.generateJWT(newUser);
+    
+    response.cookie('jwt', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+    
+    return newUser;
   }
 
   @Delete('users/:email')
