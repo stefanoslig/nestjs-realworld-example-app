@@ -81,6 +81,7 @@ export class ArticleService {
     }
 
     const articles = await qb.getResult();
+    await this.em.populate(articles, ['author']);
 
     return { articles: articles.map((a) => a.toJSON(user)), articlesCount };
   }
