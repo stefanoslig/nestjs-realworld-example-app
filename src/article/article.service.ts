@@ -65,7 +65,7 @@ export class ArticleService {
       }
 
       const ids = author.favorites.$.getIdentifiers();
-      qb.andWhere({ author: ids });
+      qb.andWhere({ id: ids });
     }
 
     qb.orderBy({ createdAt: QueryOrder.DESC });
